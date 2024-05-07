@@ -206,15 +206,14 @@ if  select == "Exchange_rates":
 
    
 
-    def fetch_exchange_rates(api_key):
+    def fetch_exchange_rates(button_clicked):
 
-        country_codes = [1, 14, 30, 37, 94, 148, 162, 166, 184, 189, 191, 208, 214, 215, 216]
-        # API endpoint for Open Exchange Rates
+      
         api_url = f'https://open.er-api.com/v6/latest?symbols={",".join(map(str, country_codes))}'
   # INR is the base currency
 
         # Make a request to the API
-        response = requests.get(api_url, params={'app_id': api_key})
+        response = requests.get(api_url, params={'app_id': button_clicked})
 
         # Check if the request was successful
         if response.status_code == 200:
@@ -228,33 +227,30 @@ if  select == "Exchange_rates":
 
     st.title('Real Exchange Rate Comparison')
 
-# Sidebar for API key input
-    api_key = st.sidebar.text_input('Enter your Open Exchange Rates API Key')
+ button_clicked = st.button("value")
          
-    if api_key:
-            exchange_rates = fetch_exchange_rates(api_key) 
+    if button_clicked:
+            exchange_rates = fetch_exchange_rates(button_clicked) 
             if exchange_rates:
-                #Display exchange_rates
-                #st.write('Exchange Rates:')
-                #st.write(exchange_rates)
+                
 
                 # Calculate the difference between exchange rates and INR
                 df_diff = pd.DataFrame(exchange_rates.items(), columns=['Country', 'Exchange Rate'])
-                df_diff['Difference'] = df_diff['Exchange Rate'] - 1
+                df_diff['Difference'] = df_diff['Exchange Rate'] - 1000
 
             # Plotting the bar chart
                 fig = px.bar(df_diff, x='Country', y='Difference',
                          title='Difference in Exchange Rate from Indian Currency (INR)',
                          color='Country', color_discrete_sequence=px.colors.qualitative.Bold)
-            # Display the plot using Streamlit
+            
                 st.plotly_chart(fig)
 
-                # Your visualization code using exchange_rates goes here
+                
                 
             else:
-                st.write('Please provide a valid API key')
+                st.write('Please provide a value')
     else:
-        st.write('Please enter your Open Exchange Rates API key in the sidebar')   
+        st.write(' ')   
  
  
  
